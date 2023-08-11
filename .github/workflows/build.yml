@@ -10,6 +10,7 @@ jobs:
         TAG: latest
         RELEASE_NAME: Latest release
         RELEASE_BODY: Latest release
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} // Required by releaseMaker
       steps:
         - name: Checkout the repository
           uses: actions/checkout@v2
