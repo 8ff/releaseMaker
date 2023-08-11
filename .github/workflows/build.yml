@@ -42,7 +42,7 @@ jobs:
           run: |
             binaryPrefix=my_binary
             tempDir=$(mktemp -d .XXXXXXXXX)
-            GOOS=darwin GOARCH=arm64 go build -ldflags "-X main.Version=$(date +'%Y-%m-%d_%H:%M:%S')" -o "${tempDir}/${binaryPrefix}.darwin.arm64"
+            # GOOS=darwin GOARCH=arm64 go build -ldflags "-X main.Version=$(date +'%Y-%m-%d_%H:%M:%S')" -o "${tempDir}/${binaryPrefix}.darwin.arm64"
             # GOOS=darwin GOARCH=amd64 go build -ldflags "-X main.Version=$(date +'%Y-%m-%d_%H:%M:%S')" -o "${tempDir}/${binaryPrefix}.darwin.amd64"
             # GOOS=linux GOARCH=arm64 go build -ldflags "-X main.Version=$(date +'%Y-%m-%d_%H:%M:%S')" -o "${tempDir}/${binaryPrefix}.linux.arm64"
             # GOOS=linux GOARCH=amd64 go build -ldflags "-X main.Version=$(date +'%Y-%m-%d_%H:%M:%S')" -o "${tempDir}/${binaryPrefix}.linux.amd64"
