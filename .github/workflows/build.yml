@@ -10,7 +10,7 @@ jobs:
         TAG: latest
         RELEASE_NAME: Latest release
         RELEASE_BODY: Latest release
-        GITHUB_TOKEN1: ${{ secrets.GITHUB_TOKEN }} // Required by releaseMaker
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} // Required by releaseMaker
       steps:
         - name: Checkout the repository
           uses: actions/checkout@v2
@@ -22,11 +22,6 @@ jobs:
 
         - name: Install dependencies
           run: go mod download
-
-        - name: Debug GITHUB_TOKEN
-          env:
-            TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          run: echo "${TOKEN:0:4}..."
   
         - name: Download releaseMaker
           run: wget https://github.com/8ff/releaseMaker/releases/download/latest/releaseMaker.linux.amd64 -O releaseMaker && chmod +x releaseMaker
