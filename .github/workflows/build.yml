@@ -18,10 +18,15 @@ jobs:
         - name: Set up Go
           uses: actions/setup-go@v2
           with:
-            go-version: '*' # Use the latest stable version of Go
-  
+            go-version: '*' # Use the latest stable version of Go          
+
         - name: Install dependencies
           run: go mod download
+
+        - name: Debug GITHUB_TOKEN
+          env:
+            TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          run: echo "${TOKEN:0:4}..."
   
         - name: Download releaseMaker
           run: wget https://github.com/8ff/releaseMaker/releases/download/latest/releaseMaker.linux.amd64 -O releaseMaker && chmod +x releaseMaker
