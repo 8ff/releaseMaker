@@ -44,7 +44,6 @@ jobs:
           run: |
             cd bin
             for file in *; do
-                echo $file
               /tmp/releaseMaker upload ${{ github.repository }} ${{ env.TAG }} $file $file
             done
   
