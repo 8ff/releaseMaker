@@ -3,6 +3,7 @@ module releaseMaker
 go 1.20
 
 require (
+	github.com/8ff/tuna v0.0.0-20230811173825-52af88c52674
 	github.com/google/go-github/v39 v39.2.0
 	golang.org/x/oauth2 v0.11.0
 )

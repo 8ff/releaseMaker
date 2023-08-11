@@ -4,12 +4,16 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"runtime"
 	"strings"
 	"time"
 
+	"github.com/8ff/tuna"
 	"github.com/google/go-github/v39/github"
 	"golang.org/x/oauth2"
 )
+
+var Version string
 
 func CreateNewRelease(client *github.Client, ctx context.Context, owner, repo string, newRelease *github.RepositoryRelease) (*github.RepositoryRelease, error) {
 	release, _, err := client.Repositories.CreateRelease(ctx, owner, repo, newRelease)
@@ -85,9 +89,12 @@ func DeleteReleaseByTag(client *github.Client, ctx context.Context, owner, repo,
 func printUsage() {
 	fmt.Fprintf(os.Stderr, "Usage: %s [command] [arguments]\n", os.Args[0])
 	fmt.Fprintln(os.Stderr, "Commands:")
-	fmt.Fprintln(os.Stderr, "  create [owner/repo] [tag] [name] [body] - Create a new release")
-	fmt.Fprintln(os.Stderr, "  upload [owner/repo] [tag] [file] [assetName] - Upload a file as an asset to an existing release")
-	fmt.Fprintln(os.Stderr, "  delete [owner/repo] [tag] - Delete an existing release")
+	fmt.Fprintln(os.Stderr, "  create, v [owner/repo] [tag] [name] [body] - Create a new release")
+	fmt.Fprintln(os.Stderr, "  upload, u [owner/repo] [tag] [file] [assetName] - Upload a file as an asset to an existing release")
+	fmt.Fprintln(os.Stderr, "  delete, d [owner/repo] [tag] - Delete an existing release")
+	fmt.Fprintln(os.Stderr, "  replace, r [owner/repo] [tag] [file] [assetName] - Delete an existing release and upload a file as an asset to a new release")
+	fmt.Fprintln(os.Stderr, "  selfUpdate - Update releaseMaker to the latest version")
+	fmt.Fprintln(os.Stderr, "  version, v - Print the version of releaseMaker")
 }
 
 func createClient(token string) *github.Client {
@@ -102,21 +109,21 @@ func createClient(token string) *github.Client {
 
 func main() {
 	args := os.Args[1:]
-	if len(args) < 2 {
+	if len(args) < 1 {
 		printUsage()
 		os.Exit(2)
 	}
 
-	// Read TOKEN from env
-	token := os.Getenv("GITHUB_TOKEN")
-	if token == "" {
-		fmt.Println("GITHUB_TOKEN is not set")
-		os.Exit(2)
-	}
-
 	switch args[0] {
-	case "create":
-		if len(args) < 6 {
+	case "create", "c":
+		// Read TOKEN from env
+		token := os.Getenv("GITHUB_TOKEN")
+		if token == "" {
+			fmt.Println("GITHUB_TOKEN is not set")
+			os.Exit(2)
+		}
+
+		if len(args) < 5 {
 			fmt.Fprintf(os.Stderr, "Usage: %s create [owner/repo] [tag] [name] [body]\n", os.Args[0])
 			os.Exit(2)
 		}
@@ -158,8 +165,15 @@ func main() {
 
 		fmt.Println("Release created successfully!")
 		os.Exit(0)
-	case "upload":
-		if len(args) < 5 {
+	case "upload", "u":
+		// Read TOKEN from env
+		token := os.Getenv("GITHUB_TOKEN")
+		if token == "" {
+			fmt.Println("GITHUB_TOKEN is not set")
+			os.Exit(2)
+		}
+
+		if len(args) < 4 {
 			fmt.Fprintf(os.Stderr, "Usage: %s upload [owner/repo] [tag] [file]\n", os.Args[0])
 			os.Exit(2)
 		}
@@ -193,7 +207,14 @@ func main() {
 
 		fmt.Println("Release uploaded successfully!")
 		os.Exit(0)
-	case "delete":
+	case "delete", "d":
+		// Read TOKEN from env
+		token := os.Getenv("GITHUB_TOKEN")
+		if token == "" {
+			fmt.Println("GITHUB_TOKEN is not set")
+			os.Exit(2)
+		}
+
 		if len(args) < 3 {
 			fmt.Fprintf(os.Stderr, "Usage: %s delete [owner/repo] [tag]\n", os.Args[0])
 			os.Exit(2)
@@ -225,6 +246,79 @@ func main() {
 		}
 
 		fmt.Println("Release deleted successfully!")
+		os.Exit(0)
+
+	case "replace", "r":
+		// Read TOKEN from env
+		token := os.Getenv("GITHUB_TOKEN")
+		if token == "" {
+			fmt.Println("GITHUB_TOKEN is not set")
+			os.Exit(2)
+		}
+
+		if len(args) < 5 {
+			fmt.Fprintf(os.Stderr, "Usage: %s replace [owner/repo] [tag] [name] [body]\n", os.Args[0])
+			os.Exit(2)
+		}
+		ownerRepo := strings.Split(args[1], "/")
+		if len(ownerRepo) != 2 {
+			fmt.Fprintf(os.Stderr, "Invalid owner/repo argument: %s\n", args[1])
+			os.Exit(2)
+		}
+		owner := ownerRepo[0]
+		repo := ownerRepo[1]
+		// Create an authenticated client
+		client := createClient(token)
+
+		// Read release tag, name, body from args
+		tagName := args[2]
+		releaseName := args[3]
+		releaseBody := args[4]
+
+		// Check for empty args
+		if owner == "" || repo == "" || tagName == "" || releaseName == "" || releaseBody == "" {
+			fmt.Fprintf(os.Stderr, "Invalid arguments: %s\n", args[1:])
+			os.Exit(2)
+		}
+
+		// Attempt to delete the release first, ignoring errors
+		_ = DeleteReleaseByTag(client, context.Background(), owner, repo, tagName)
+
+		// Define the new release information
+		newRelease := &github.RepositoryRelease{
+			TagName:    github.String(tagName),
+			Name:       github.String(releaseName),
+			Body:       github.String(releaseBody),
+			Prerelease: github.Bool(false),
+		}
+
+		// Create a new release
+		_, err := CreateNewRelease(client, context.Background(), owner, repo, newRelease)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		fmt.Println("Release replaced successfully!")
+		os.Exit(0)
+	case "selfUpdate":
+		// Determine OS and ARCH
+		osRelease := runtime.GOOS
+		arch := runtime.GOARCH
+
+		// Build URL
+		e := tuna.SelfUpdate(fmt.Sprintf("https://github.com/8ff/releaseMaker/releases/download/latest/releaseMaker.%s.%s", osRelease, arch))
+		if e != nil {
+			fmt.Println(e)
+			os.Exit(1)
+		}
+
+		fmt.Println("Updated!")
+	case "version", "v":
+		fmt.Printf("%s\n", Version)
+		os.Exit(0)
+	case "help", "h":
+		printUsage()
 		os.Exit(0)
 	default:
 		printUsage()

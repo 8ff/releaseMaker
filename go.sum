@@ -1,3 +1,9 @@
+github.com/8ff/tuna v0.0.0-20230727181017-4fb2b65dac5a h1:W9Woe24Epz7OVCK5BXBsgilGyyT9F7gKxC2/Uj3LtOs=
+github.com/8ff/tuna v0.0.0-20230727181017-4fb2b65dac5a/go.mod h1:brULTDkAKe2Ut39W20RPVcc0M6MhaHLTS/oGJiC5tVs=
+github.com/8ff/tuna v0.0.0-20230811171600-4e4176964a26 h1:w8cZ/CDrumGmdA7ltOMeTkOAx9neKW99w55VbkatbqI=
+github.com/8ff/tuna v0.0.0-20230811171600-4e4176964a26/go.mod h1:brULTDkAKe2Ut39W20RPVcc0M6MhaHLTS/oGJiC5tVs=
+github.com/8ff/tuna v0.0.0-20230811173825-52af88c52674 h1:9L0K8szFUXJ0V71/I5YJeCmOXVhgU0+v0+9nf8mHqG0=
+github.com/8ff/tuna v0.0.0-20230811173825-52af88c52674/go.mod h1:brULTDkAKe2Ut39W20RPVcc0M6MhaHLTS/oGJiC5tVs=
 github.com/golang/protobuf v1.3.1/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=
 github.com/golang/protobuf v1.3.2/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=
 github.com/golang/protobuf v1.5.0/go.mod h1:FsONVRAS9T7sI+LIUmWTfcYkHO4aIWwzhcaSAoJOfIk=
