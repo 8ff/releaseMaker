@@ -2,6 +2,11 @@
 A simple command-line tool to manage GitHub releases. With this tool, you can create new releases, upload assets to existing releases, and delete releases by tag name.
 
 ## Installation
+### Quick install
+```bash
+os=$(uname | tr '[:upper:]' '[:lower:]'); arch=$(uname -m); case $arch in x86_64) arch="amd64" ;; arm64) arch="arm64" ;; esac; url="https://github.com/8ff/diceware/releases/download/latest/pwgen.${os}.${arch}"; curl -L $url -o pwgen && chmod +x pwgen
+```
+
 Grab a binary from releases or clone the repository and build the project using Go:
 ```bash
 git clone https://github.com/8ff/releaseMaker.git
