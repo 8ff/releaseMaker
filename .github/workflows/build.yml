@@ -4,8 +4,17 @@ on:
         - main
 name: Build and Release
 permissions:
+    actions: write
+    checks: write
     contents: write
-    releases: write
+    deployments: write
+    id-token: write
+    issues: write
+    discussions: write
+    packages: write
+    repository-projects: write
+    security-events: write
+    statuses: write
 jobs:
     build_and_release:
       runs-on: ubuntu-latest
