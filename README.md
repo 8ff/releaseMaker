@@ -4,7 +4,7 @@ A simple command-line tool to manage GitHub releases. With this tool, you can cr
 ## Installation
 ### Quick install
 ```bash
-os=$(uname | tr '[:upper:]' '[:lower:]'); arch=$(uname -m); case $arch in x86_64) arch="amd64" ;; arm64) arch="arm64" ;; esac; url="https://github.com/8ff/diceware/releases/download/latest/pwgen.${os}.${arch}"; curl -L $url -o pwgen && chmod +x pwgen
+name="releaseMaker"; os=$(uname | tr '[:upper:]' '[:lower:]'); arch=$(uname -m); case $arch in x86_64) arch="amd64" ;; arm64) arch="arm64" ;; esac; url="https://github.com/8ff/releaseMaker/releases/download/latest/${name}.${os}.${arch}"; curl -L $url -o ${name} && chmod +x ${name}
 ```
 
 Grab a binary from releases or clone the repository and build the project using Go:
