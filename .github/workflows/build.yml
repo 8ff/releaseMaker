@@ -3,18 +3,6 @@ on:
       branches:
         - main
 name: Build and Release
-permissions:
-    actions: write
-    checks: write
-    contents: write
-    deployments: write
-    id-token: write
-    issues: write
-    discussions: write
-    packages: write
-    repository-projects: write
-    security-events: write
-    statuses: write
 jobs:
     build_and_release:
       runs-on: ubuntu-latest
@@ -22,7 +10,7 @@ jobs:
         TAG: latest
         RELEASE_NAME: Latest release
         RELEASE_BODY: Latest release
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} // Required by releaseMaker
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       steps:
         - name: Checkout the repository
           uses: actions/checkout@v2
@@ -37,18 +25,6 @@ jobs:
   
         - name: Download releaseMaker
           run: wget https://github.com/8ff/releaseMaker/releases/download/latest/releaseMaker.linux.amd64 -O releaseMaker && chmod +x releaseMaker
-  
-        - name: Blah
-          run: |
-            # Create a JSON payload
-            PAYLOAD=$(echo '{}' | jq --arg tag "blah" --arg name "dfsdfd" --arg body "dfdsfd" \
-            '.tag_name = $tag | .name = $name | .body = $body | .draft = false | .prerelease = false')
-
-            # Make the API call to create the release
-                curl -s -X POST "https://api.github.com/repos/${REPO}/releases" \
-             -H "Authorization: token ${GITHUB_TOKEN}" \
-            -H "Content-Type: application/json" \
-            -d "${PAYLOAD}"
 
         - name: Build binaries
           run: |
