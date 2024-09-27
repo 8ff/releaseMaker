@@ -2,6 +2,12 @@
 A simple command-line tool to manage GitHub releases. With this tool, you can create new releases, upload assets to existing releases, and delete releases by tag name.
 
 ## Installation
+### Using in Github Actions
+releaseMaker is used in all of the 8ff repos including this one, example build can be see in [.github/workflows/build.yml](https://github.com/8ff/releaseMaker/.github/workflows/build.yml)
+```
+/tmp/releaseMaker upload ${{ github.repository }} ${{ env.TAG }} [file] [assetName]
+```
+
 ### Quick install
 ```bash
 repo="releaseMaker"; name="releaseMaker"; os=$(uname | tr '[:upper:]' '[:lower:]'); arch=$(uname -m); case $arch in x86_64) arch="amd64" ;; arm64) arch="arm64" ;; esac; url="https://github.com/8ff/${repo}/releases/download/latest/${name}.${os}.${arch}"; curl -L $url -o ${name} && chmod +x ${name}
@@ -23,7 +29,7 @@ export GITHUB_TOKEN=your_github_token
 ### Create a New Release
 Create a new release for the specified repository:
 ```bash
-./your-binary create [owner/repo] [tag] [name] [body]
+./releaseMaker create [owner/repo] [tag] [name] [body]
 ```
 
 - `owner/repo`: The owner and repository name, separated by a slash.
@@ -34,7 +40,7 @@ Create a new release for the specified repository:
 ### Upload an Asset to a Release
 Upload a file as an asset to an existing release by tag name:
 ```bash
-./your-binary upload [owner/repo] [tag] [file] [assetName]
+./releaseMaker upload [owner/repo] [tag] [file] [assetName]
 ```
 
 - `owner/repo`: The owner and repository name, separated by a slash.
@@ -45,7 +51,7 @@ Upload a file as an asset to an existing release by tag name:
 ### Delete a Release
 Delete an existing release by tag name:
 ```bash
-./your-binary delete [owner/repo] [tag]
+./releaseMaker delete [owner/repo] [tag]
 ```
 
 - `owner/repo`: The owner and repository name, separated by a slash.
